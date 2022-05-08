@@ -65,7 +65,11 @@ class NeRFDataset(DatasetBase):
         cam_trans = torch.diag(torch.tensor([1, -1, -1, 1], dtype=torch.float32))
 
         for frame in tqdm(j["frames"]):
-            fpath = path.join(data_path, path.basename(frame["file_path"]) + ".png")
+            # Modified: add check if there is file extension
+            if frame['file_path'].endswith('.png'):
+                fpath = path.join(data_path, path.basename(frame["file_path"]))
+            else:
+                fpath = path.join(data_path, path.basename(frame["file_path"]) + ".png")
             c2w = torch.tensor(frame["transform_matrix"], dtype=torch.float32)
             c2w = c2w @ cam_trans  # To OpenCV
 
